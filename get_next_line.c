@@ -3,131 +3,135 @@
 /*                                                        :::      ::::::::   */
 /*   get_next_line.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: algalian <marvin@42.fr>                    +#+  +:+       +#+        */
+/*   By: imurugar <imurugar@student.42madrid.com    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2023/05/04 15:02:19 by algalian          #+#    #+#             */
-/*   Updated: 2023/05/04 15:02:20 by algalian         ###   ########.fr       */
+/*   Created: 2022/09/26 13:23:21 by imurugar          #+#    #+#             */
+/*   Updated: 2023/02/01 11:35:04 by imurugar         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include"get_next_line.h"
+#include	"matrix.h"
 
-char	*ft_get(int fd, char *s)
+char	*ft_new_stash(char *stash)
 {
-	char	*buf;
-	int		bytes;
+	int		i;
+	int		y;
+	char	*str;
 
-	buf = malloc(sizeof(char) * (BUFFER_SIZE + 1));
-	if (!buf)
-		return (NULL);
-	bytes = 1;
-	while (bytes != 0 && !strchr(s, '\n'))
+	i = 0;
+	while (stash[i] && stash[i] != '\n')
+		i++;
+	if (!stash[i])
 	{
-		bytes = read(fd, buf, BUFFER_SIZE);
-		if (bytes == -1)
+		free(stash);
+		return (NULL);
+	}
+	str = malloc(sizeof(char) * (ft_strlen(stash) - i + 1));
+	if (!str)
+		return (free(stash), NULL);
+	i++;
+	y = 0;
+	while (stash[i])
+		str[y++] = stash[i++];
+	str[y] = '\0';
+	free(stash);
+	return (str);
+}
+
+char	*ft_get_line(char *stash)
+{
+	int		index;
+	char	*str;
+
+	index = 0;
+	if (!stash[index])
+		return (NULL);
+	while (stash[index] && stash[index] != '\n')
+		index++;
+	if (stash[index] == '\n')
+		str = malloc(sizeof(char) * (index + 2));
+	else
+		str = malloc(sizeof(char) * (index + 1));
+	if (!str)
+		return (NULL);
+	index = 0;
+	while (stash[index] && stash[index] != '\n')
+	{
+		str[index] = stash[index];
+		index++;
+	}
+	if (stash[index] == '\n')
+		str[index++] = '\n';
+	str[index] = '\0';
+	return (str);
+}
+
+char	*ft_read_to_stash(int fd, char *stash)
+{
+	char	*buffer;
+	int		rdd_bytes;
+
+	rdd_bytes = 1;
+	buffer = malloc((BUFFER_SIZE + 1) * sizeof(char));
+	if (!buffer)
+		return (free(stash), NULL);
+	while (!ft_strchr(stash, '\n') && rdd_bytes > 0)
+	{
+		rdd_bytes = read(fd, buffer, BUFFER_SIZE);
+		if (rdd_bytes == -1)
 		{
-			free(buf);
-			free(s);
+			free(stash);
+			free(buffer);
 			return (NULL);
 		}
-		buf[bytes] = 0;
-		s = join(s, buf);
+		buffer[rdd_bytes] = '\0';
+		stash = ft_strjoin(stash, buffer);
 	}
-	free(buf);
-	return (s);
-}
-
-char	*ft_next(char *s)
-{
-	char	*leftover;
-	int		i;
-	int		j;
-
-	i = 0;
-	while (s[i] && s[i] != '\n')
-		i++;
-	if (!s[i])
-	{
-		free(s);
-		return (NULL);
-	}
-	leftover = (char *) malloc(sizeof(char) * (strlen(s) - i + 1));
-	if (!leftover)
-		return (NULL);
-	j = 0;
-	while (s[i + 1])
-	{
-		leftover[j] = s[i + 1];
-		j++;
-		i++;
-	}
-	leftover[j] = '\0';
-	free(s);
-	return (leftover);
-}
-
-char	*ft_line(char *s)
-{
-	char	*line;
-	int		i;
-
-	i = 0;
-	if (!s[i])
-		return (NULL);
-	while (s[i] && s[i] != '\n')
-		i++;
-	line = (char *)malloc(sizeof(char) * (i + 2));
-	if (!line)
-		return (NULL);
-	i = 0;
-	while (s[i] && s[i] != '\n')
-	{
-		line[i] = s[i];
-		i++;
-	}
-	if (s[i] == '\n')
-	{
-		line[i] = s[i];
-		i++;
-	}
-	line[i] = '\0';
-	return (line);
+	free(buffer);
+	return (stash);
 }
 
 char	*get_next_line(int fd)
 {
-	static char	*s;
+	static char	*stash;
 	char		*line;
 
-	if (fd < 0 || BUFFER_SIZE <= 0)
+	if (fd < 0 || BUFFER_SIZE <= 0 || fd > OPEN_MAX)
 		return (NULL);
-	s = ft_get(fd, s);
-	if (!s)
+	stash = ft_read_to_stash(fd, stash);
+	if (!stash)
 		return (NULL);
-	line = ft_line(s);
-	s = ft_next(s);
+	line = ft_get_line(stash);
+	if (!line)
+	{
+		free(stash);
+		stash = NULL;
+		return (NULL);
+	}
+	stash = ft_new_stash(stash);
 	return (line);
 }
 
-/*int	main()
-{
-	char *line;
-	int	fd2;
-	int i;
 
-	fd2 = open("Necronomicon.txt", O_RDONLY);
-	i = 1;
-	line = "1";
-	while (line)
+
+
+/*int	main(void)
+{
+	char	*line;
+	int		fd1;
+
+	fd1 = open("input.csv", O_RDONLY);
+
+	while (1)
 	{
-		line = get_next_line(fd2);
+		line = get_next_line(fd1);
+		printf("line : %s", line);
+		if (line == NULL)
+		{
+			break ;
+		}
 		free(line);
-		printf("%i --> %s", i, line);
-		i++;
 	}
-	printf("\n");
-	free(line);
-	system("leaks a.out");
-	close(fd2);
+	system("leaks -q a.out");
 	return (0);
 }*/

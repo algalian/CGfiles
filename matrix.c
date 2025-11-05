@@ -1,39 +1,18 @@
-#include<stdio.h>
-#include<string.h>
-#include<unistd.h>
-#include<stdlib.h>
-#include<math.h>
+#include"matrix.h"
 
-typedef struct column
-{
-    double *values;
-    int row_count;
-}	t_column;
 
 int combinations(int n)
 {   
     return((int)(tgamma(n+1) / (tgamma(n-1) * 2)));
 }
 
-t_column *read_csv(char *filename)
+t_column *read_csv(char *filename) 
 {
-    t_column *c;
-    int i;
-    
-    //FILE *fp = fopen("input.csv", "r");
-    //char *line;
-    c = malloc(sizeof(t_column));
-    c->values = malloc(4*sizeof(double)); 
-    c->values[0] = 0.5;
-    c->values[1] = 0.3;
-    c->values[2] = 0.4;
-    c->values[3] = 0.2;
-    c->row_count = 4;
 
     return(c);
 }
 
-int main(int argc, char **argv)
+int main()
 {
     t_column *column;
     double *m;
@@ -46,6 +25,11 @@ int main(int argc, char **argv)
     
 
     column = read_csv("input.csv");
+    if(!column)
+    {
+        perror("error generating colummn struct");
+        return(2);
+    }
     m = column->values;
     size = column->row_count;
     output_size = combinations(size);
