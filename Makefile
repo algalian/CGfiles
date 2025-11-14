@@ -12,8 +12,8 @@ SRC			= main.c \
 			  get_next_line.c \
 			  get_next_line_utils.c \
 			  write_csv.c \
+			  transform.c \
 			  
-
 OBJ			= $(SRC:.c=.o)
 
 GREEN		= \033[0;32m

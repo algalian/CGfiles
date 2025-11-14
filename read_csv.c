@@ -30,7 +30,7 @@ t_column *read_csv(char *filename)
 	}
     printf("lines %i\n", i);
     close(fd);
-    c->values = malloc(sizeof(double)*i);
+    c->values = malloc(sizeof(double) * i);
     if (!c->values)
     {
         perror("malloc error generating values of column\n");

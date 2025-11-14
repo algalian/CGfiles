@@ -1,45 +1,23 @@
 #include"matrix.h" 
 
-int combinations(int n)
-{   
-    return((int)(tgamma(n+1) / (tgamma(n-1) * 2)));
-}
 
 
-int write_csv(t_column *c)
+int write_csv(t_column *output)
 {
+    FILE *fp = fopen("output.csv", "w");
     int i;
-    int j;
-    int k;
-    int size;
-    double *output;
-    int output_size;
-    double *m;
 
-    m = c->values;
-    size = c->row_count;
-    output_size = combinations(size);
-    output = malloc(sizeof(double) * output_size);
-    if (!output)
+    if (!fp)
     {
-        fprintf(stderr, "malloc error\n");
+        perror("fopen");
         return (1);
     }
     i = 0;
-    k = 0;
-    printf("combinations: %i\n", output_size);
-    while(i < size - 1)
-    {
-        j = i;
-        while(j < size- 1)
-        {
-            output[k] = m[i] * m[j + 1];
-            printf("%f\n", output[k]);
-            j++;
-            k++;
-        }
+    while (i < output->row_count)
+    {    
+        fprintf(fp, "%f\n", output->values[i]);
         i++;
     }
-    free(output);
+    fclose(fp);
     return(0);
 }

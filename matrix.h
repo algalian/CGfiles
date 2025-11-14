@@ -36,7 +36,8 @@ char	*ft_strchr(const char *s, int c);
 char	*ft_strjoin(char *s1, char *s2);
 int			combinations(int n);
 t_column	*read_csv(char *filename);
-int write_csv(t_column *c);
+t_column *transform(t_column *c);
+int write_csv(t_column *output);
 
 
 #endif
