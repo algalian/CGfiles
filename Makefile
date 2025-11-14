@@ -7,9 +7,12 @@ CC			= gcc
 CFLAGS		= -Wall -D BUFFER_SIZE=64
 LIBS		= -lm
 
-SRC			= get_next_line.c \
+SRC			= main.c \
+			  read_csv.c \
+			  get_next_line.c \
 			  get_next_line_utils.c \
-			  matrix.c
+			  write_csv.c \
+			  
 
 OBJ			= $(SRC:.c=.o)
 
