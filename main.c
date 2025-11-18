@@ -2,33 +2,44 @@
 
 
 
-int main()
+int main(int argc, char **argv)
 {
     t_column *input;
     t_column *output;
 
-    input = read_csv("input.csv");
-    if(!input)
+    if (argc != 3)
     {
-        perror("error generating colummn struct");
-        return(2);
+        fprintf(stderr,
+            "Input error.\nUsage: %s <input_file> <output_file>\n",
+            argv[0]
+        );
+        return 4;
     }
+
+    input = read_csv(argv[1]);
+    if (!input)
+    {
+        fprintf(stderr, "Error: unable to read input file '%s'\n", argv[1]);
+        return 2;
+    }
+
     output = transform(input);
-    if(!output)
+    if (!output)
     {
-        perror("error processing data");
-        return(3);
+        fprintf(stderr, "Error: unable to process data\n");
+        return 3;
     }
-    if(write_csv(output) != 0)
-    {   
-        perror("error exporting info to file");
-        return(1);        
+
+    if (write_csv(output, argv[2]) != 0)
+    {
+        fprintf(stderr, "Error: unable to write output file '%s'\n", argv[2]);
+        return 1;
     }
+
     free(input->values);
     free(input);
     free(output->values);
     free(output);
-    return(1);
 
+    return 0;
 }
-

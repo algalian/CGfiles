@@ -2,14 +2,13 @@
 
 
 
-int write_csv(t_column *output)
+int write_csv(t_column *output, char *filename)
 {
-    FILE *fp = fopen("output.csv", "w");
+    FILE *fp = fopen(filename, "w");
     int i;
 
     if (!fp)
     {
-        perror("fopen");
         return (1);
     }
     i = 0;

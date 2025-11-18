@@ -35,6 +35,11 @@ t_column *transform(t_column *input)
         j = i;
         while(j < size- 1)
         {
+            if((m[i] < 0 || m[i] > 1) || m[j+1] < 0 || m[j+1] > 1)
+            {   
+                fprintf(stderr, "value %i (or the next one) is not a probability\n", i);
+                return(NULL);
+            }
             output->values[k] = m[i] * m[j + 1];
             printf("%f\n", output->values[k]);
             j++;

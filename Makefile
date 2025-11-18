@@ -3,7 +3,9 @@
 # **************************************************************************** #
 
 NAME		= matrix
+WINNAME		= matrix.exe
 CC			= gcc
+WINCC		= x86_64-w64-mingw32-gcc
 CFLAGS		= -Wall -D BUFFER_SIZE=64
 LIBS		= -lm
 
@@ -26,6 +28,11 @@ $(NAME): $(OBJ)
 	@$(CC) $(CFLAGS) $(OBJ) $(LIBS) -o $(NAME)
 	@echo "$(GREEN)Build complete: $(NAME)$(RESET)"
 
+
+win:
+	@$(WINCC) $(CFLAGS) $(SRC) $(LIBS) -o $(WINNAME)
+	@echo "$(GREEN)Windows executable built: $(WINNAME)$(RESET)"
+
 %.o: %.c matrix.h
 	@$(CC) $(CFLAGS) -c $< -o $@
 	@echo "$(YELLOW)Compiled: $<$(RESET)"
@@ -35,9 +42,8 @@ clean:
 	@echo "$(YELLOW)Object files removed.$(RESET)"
 
 fclean: clean
-	@rm -f $(NAME)
-	@echo "$(YELLOW)Executable removed.$(RESET)"
-
+	@rm -f $(NAME) $(WINNAME)
+	@echo "$(YELLOW)Executables removed.$(RESET)"
 re: fclean all
 
 .PHONY: all clean fclean re

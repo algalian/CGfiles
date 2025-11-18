@@ -10,7 +10,8 @@
 # include <fcntl.h>
 # include <math.h>
 # include <string.h>
-
+# include <ctype.h>
+# include <stdbool.h>
 
 
 # ifndef BUFFER_SIZE
@@ -37,7 +38,7 @@ char	*ft_strjoin(char *s1, char *s2);
 int			combinations(int n);
 t_column	*read_csv(char *filename);
 t_column *transform(t_column *c);
-int write_csv(t_column *output);
+int write_csv(t_column *output, char *filename);
 
 
 #endif
